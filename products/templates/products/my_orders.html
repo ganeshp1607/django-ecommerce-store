@@ -1,0 +1,456 @@
+```html
+{% extends "products/base.html" %}
+
+{% block title %}My Orders - My Store{% endblock %}
+
+{% block content %}
+
+<h1>📦 My Orders</h1>
+
+
+{% if orders %}
+
+<div class="orders-container">
+
+    {% for order in orders %}
+
+    <a href="{% url 'order_detail' order.id %}">
+    📦 View Order Details
+</a>
+
+    <div class="order-card">
+
+
+        <!-- Order Header -->
+
+        <div class="order-header">
+
+            <div>
+
+                <h2>
+                    Order #{{ order.id }}
+                </h2>
+
+                <p>
+                    📅 {{ order.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+
+                <!-- Order Status -->
+
+                <p class="order-status">
+
+                    <strong>Status:</strong>
+
+                    {% if order.status == "Pending" %}
+
+                        🕐 Pending
+
+                    {% elif order.status == "Confirmed" %}
+
+                        ✅ Confirmed
+
+                    {% elif order.status == "Shipped" %}
+
+                        📦 Shipped
+
+                    {% elif order.status == "Delivered" %}
+
+                        🚚 Delivered
+
+                    {% elif order.status == "Cancelled" %}
+
+                        ❌ Cancelled
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- Payment Status -->
+
+                <p class="payment-status">
+
+                    <strong>Payment:</strong>
+
+                    {% if order.payment_status == "Pending" %}
+
+                        🟡 Pending
+
+                    {% elif order.payment_status == "Paid" %}
+
+                        🟢 Paid
+
+                    {% elif order.payment_status == "Failed" %}
+
+                        🔴 Failed
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <!-- Order Total -->
+
+            <div class="order-total">
+
+                ₹{{ order.total_amount }}
+
+            </div>
+
+        </div>
+
+
+        <!-- Order Items -->
+
+        <div class="order-items">
+
+            {% for item in order.orderitem_set.all %}
+
+            <div class="order-item">
+
+
+                <!-- Product Image -->
+
+                {% if item.product.image %}
+
+                    <img
+                        src="{{ item.product.image.url }}"
+                        alt="{{ item.product.name }}"
+                    >
+
+                {% else %}
+
+                    <div class="no-image">
+                        No Image
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Product Information -->
+
+                <div class="item-info">
+
+                    <h3>
+                        {{ item.product.name }}
+                    </h3>
+
+                    <p>
+                        Quantity: {{ item.quantity }}
+                    </p>
+
+                    <p>
+                        Price: ₹{{ item.price }}
+                    </p>
+
+                    <p>
+                        Subtotal:
+                        ₹{{ item.subtotal|floatformat:2 }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    </div>
+        </div>
+
+
+        {% if order.status == "Pending" or order.status == "Confirmed" %}
+
+            <a
+                href="{% url 'cancel_order' order.id %}"
+                class="cancel-button"
+                onclick="return confirm('Are you sure you want to cancel this order?');"
+            >
+                ❌ Cancel Order
+            </a>
+
+        {% endif %}
+
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% else %}
+
+
+<!-- No Orders -->
+
+<div class="empty-orders">
+
+    <h2>📦 No Orders Yet</h2>
+
+    <p>
+        You haven't placed any orders yet.
+    </p>
+
+    <a href="{% url 'product_list' %}">
+        🛍️ Start Shopping
+    </a>
+
+</div>
+
+
+{% endif %}
+
+
+
+<style>
+
+    .orders-container {
+
+        max-width: 900px;
+
+        margin: 30px auto;
+
+    }
+
+
+    .order-card {
+
+        background: white;
+
+        padding: 25px;
+
+        margin-bottom: 25px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+    }
+
+
+    /* Order Header */
+
+    .order-header {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-start;
+
+        border-bottom: 1px solid #ddd;
+
+        padding-bottom: 15px;
+
+    }
+
+
+    .order-header h2 {
+
+        margin: 0;
+
+    }
+
+
+    /* Order Total */
+
+    .order-total {
+
+        font-size: 24px;
+
+        font-weight: bold;
+
+        white-space: nowrap;
+
+    }
+
+
+    /* Order Status */
+
+    .order-status {
+
+        margin-top: 10px;
+
+        padding: 8px 12px;
+
+        background: #f5f5f5;
+
+        border-radius: 6px;
+
+        font-weight: bold;
+
+    }
+
+
+    /* Payment Status */
+
+    .payment-status {
+
+        margin-top: 8px;
+
+        padding: 8px 12px;
+
+        background: #f5f5f5;
+
+        border-radius: 6px;
+
+        font-weight: bold;
+
+    }
+
+
+    /* Order Items */
+
+    .order-item {
+
+        display: flex;
+
+        gap: 20px;
+
+        padding: 20px 0;
+
+        border-bottom: 1px solid #eee;
+
+    }
+
+
+    /* Product Image */
+
+    .order-item img,
+
+    .no-image {
+
+        width: 100px;
+
+        height: 100px;
+
+        object-fit: contain;
+
+        border-radius: 8px;
+
+    }
+
+
+    .no-image {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #eee;
+
+    }
+
+
+    /* Product Information */
+
+    .item-info h3 {
+
+        margin-top: 0;
+
+    }
+
+
+    /* Empty Orders */
+
+    .empty-orders {
+
+        text-align: center;
+
+        background: white;
+
+        padding: 50px;
+
+        border-radius: 10px;
+
+    }
+
+
+    .empty-orders a {
+
+        display: inline-block;
+
+        margin-top: 15px;
+
+        padding: 12px 20px;
+
+        background: #222;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 5px;
+
+    }
+
+
+    /* Mobile */
+
+    @media (max-width: 600px) {
+
+        .order-header {
+
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 10px;
+
+        }
+
+
+        .order-total {
+
+            font-size: 22px;
+
+        }
+
+
+        .order-item {
+
+            flex-direction: column;
+
+        }
+
+    }
+    
+    .cancel-button {
+
+    display: inline-block;
+
+    margin-top: 20px;
+
+    padding: 10px 18px;
+
+    background: #d32f2f;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 6px;
+
+    font-weight: bold;
+
+}
+
+.cancel-button:hover {
+
+    background: #b71c1c;
+
+}
+
+</style>
+
+
+{% endblock %}
+```

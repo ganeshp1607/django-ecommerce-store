@@ -1,0 +1,165 @@
+{% extends "products/base.html" %}
+
+{% block title %}Edit Review - My Store{% endblock %}
+
+{% block content %}
+
+<div class="edit-review-container">
+
+    <div class="edit-review-box">
+
+        <h1>✏️ Edit Your Review</h1>
+
+        <p class="product-name">
+            {{ review.product.name }}
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <label for="rating">
+                ⭐ Rating
+            </label>
+
+            <select
+                name="rating"
+                id="rating"
+                required
+            >
+
+                <option value="5"
+                    {% if review.rating == 5 %}selected{% endif %}>
+                    ⭐⭐⭐⭐⭐ Excellent
+                </option>
+
+                <option value="4"
+                    {% if review.rating == 4 %}selected{% endif %}>
+                    ⭐⭐⭐⭐ Very Good
+                </option>
+
+                <option value="3"
+                    {% if review.rating == 3 %}selected{% endif %}>
+                    ⭐⭐⭐ Good
+                </option>
+
+                <option value="2"
+                    {% if review.rating == 2 %}selected{% endif %}>
+                    ⭐⭐ Average
+                </option>
+
+                <option value="1"
+                    {% if review.rating == 1 %}selected{% endif %}>
+                    ⭐ Poor
+                </option>
+
+            </select>
+
+            <label for="comment">
+                💬 Your Review
+            </label>
+
+            <textarea
+                name="comment"
+                id="comment"
+                rows="5"
+                required
+            >{{ review.comment }}</textarea>
+
+            <button type="submit">
+                💾 Update Review
+            </button>
+
+        </form>
+
+        <a
+            href="{% url 'product_detail' review.product.id %}"
+            class="back-button"
+        >
+            ← Back to Product
+        </a>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .edit-review-container {
+        min-height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+    }
+
+    .edit-review-box {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.12);
+    }
+
+    .edit-review-box h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .product-name {
+        text-align: center;
+        color: #666;
+        margin-bottom: 25px;
+    }
+
+    .edit-review-box label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .edit-review-box select,
+    .edit-review-box textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
+
+    .edit-review-box textarea {
+        resize: vertical;
+    }
+
+    .edit-review-box button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 20px;
+        background: #222;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .edit-review-box button:hover {
+        background: #444;
+    }
+
+    .back-button {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #222;
+        text-decoration: none;
+    }
+
+</style>
+
+{% endblock %}

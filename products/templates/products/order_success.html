@@ -1,0 +1,199 @@
+{% extends "products/base.html" %}
+
+{% block title %}Order Successful - My Store{% endblock %}
+
+{% block content %}
+
+<div class="success-container">
+
+    <div class="success-box">
+
+        <div class="success-icon">
+            ✅
+        </div>
+
+        <h1>Order Placed Successfully!</h1>
+
+        <p class="message">
+            Thank you for your purchase, {{ order.customer_name }}.
+        </p>
+
+        <div class="order-details">
+
+            <p>
+                <strong>Order ID:</strong>
+                #{{ order.id }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ order.email }}
+            </p>
+
+            <p>
+                <strong>Total Amount:</strong>
+                ₹{{ order.total_amount }}
+            </p>
+
+            <p>
+                <strong>Order Date:</strong>
+                {{ order.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+        </div>
+
+
+        <h2>📦 Ordered Products</h2>
+
+        {% for item in items %}
+
+        <div class="order-item">
+
+            {% if item.product.image %}
+
+                <img
+                    src="{{ item.product.image.url }}"
+                    alt="{{ item.product.name }}"
+                >
+
+            {% else %}
+
+                <div class="no-image">
+                    No Image
+                </div>
+
+            {% endif %}
+
+            <div class="item-info">
+
+                <h3>{{ item.product.name }}</h3>
+
+                <p>
+                    Quantity: {{ item.quantity }}
+                </p>
+
+                <p>
+                    Subtotal: ₹{{ item.subtotal }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+        <div class="buttons">
+
+            <a href="{% url 'my_orders' %}">
+                📦 My Orders
+            </a>
+
+            <a href="{% url 'product_list' %}">
+                🛍️ Continue Shopping
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .success-container {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .success-box {
+        width: 700px;
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    .success-icon {
+        text-align: center;
+        font-size: 60px;
+    }
+
+    .success-box h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .message {
+        text-align: center;
+        color: #555;
+    }
+
+    .order-details {
+        margin-top: 25px;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 8px;
+    }
+
+    .order-details p {
+        margin: 10px 0;
+    }
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .order-item img,
+    .no-image {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    .no-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eee;
+    }
+
+    .item-info h3 {
+        margin: 0 0 8px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .buttons a {
+        padding: 12px 20px;
+        background: #222;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    @media (max-width: 600px) {
+
+        .success-box {
+            width: 100%;
+            padding: 20px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}

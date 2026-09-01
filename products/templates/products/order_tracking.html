@@ -1,0 +1,281 @@
+```html
+{% extends "products/base.html" %}
+
+{% block title %}Track Order #{{ order.id }} - My Store{% endblock %}
+
+{% block content %}
+
+<div class="tracking-page">
+
+    <h1>🚚 Track Your Order</h1>
+
+    <div class="order-header">
+
+        <h2>Order #{{ order.id }}</h2>
+
+        <p>
+            <strong>Tracking Number:</strong>
+            {{ order.tracking_number|default:"Not assigned yet" }}
+        </p>
+
+        <p>
+            <strong>Order Date:</strong>
+            {{ order.created_at|date:"d M Y, h:i A" }}
+        </p>
+
+        {% if order.estimated_delivery %}
+            <p>
+                <strong>Estimated Delivery:</strong>
+                {{ order.estimated_delivery|date:"d M Y" }}
+            </p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="tracking-container">
+
+        <h2>📦 Delivery Status</h2>
+
+        {% for history in order.status_history.all %}
+
+        <div class="tracking-step completed">
+
+            <div class="tracking-icon">
+                ✓
+            </div>
+
+            <div class="tracking-details">
+
+                <h3>
+                    {{ history.get_status_display }}
+                </h3>
+
+                <p>
+                    {{ history.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+            <p>
+                No tracking information available yet.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <div class="current-status">
+
+        <h2>Current Status</h2>
+
+        <p>
+            🚚 {{ order.get_status_display }}
+        </p>
+
+    </div>
+
+
+    <a
+        href="{% url 'my_orders' %}"
+        class="back-button"
+    >
+        ← Back to My Orders
+    </a>
+
+</div>
+
+
+<style>
+
+    .tracking-page {
+
+        max-width: 800px;
+
+        margin: 30px auto;
+
+        padding: 20px;
+
+    }
+
+
+    .tracking-page h1 {
+
+        text-align: center;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    .order-header {
+
+        background: white;
+
+        padding: 25px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        margin-bottom: 25px;
+
+    }
+
+
+    .order-header p {
+
+        margin: 10px 0;
+
+    }
+
+
+    .tracking-container {
+
+        background: white;
+
+        padding: 25px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+    }
+
+
+    .tracking-step {
+
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+        position: relative;
+
+        padding-bottom: 30px;
+
+    }
+
+
+    .tracking-step:last-child {
+
+        padding-bottom: 0;
+
+    }
+
+
+    .tracking-icon {
+
+        width: 40px;
+
+        height: 40px;
+
+        border-radius: 50%;
+
+        background: green;
+
+        color: white;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-weight: bold;
+
+        font-size: 20px;
+
+        flex-shrink: 0;
+
+    }
+
+
+    .tracking-details h3 {
+
+        margin: 0 0 5px 0;
+
+    }
+
+
+    .tracking-details p {
+
+        margin: 0;
+
+        color: #666;
+
+    }
+
+
+    .current-status {
+
+        background: #e8f5e9;
+
+        padding: 20px;
+
+        margin-top: 25px;
+
+        border-radius: 10px;
+
+        text-align: center;
+
+    }
+
+
+    .current-status p {
+
+        font-size: 20px;
+
+        font-weight: bold;
+
+    }
+
+
+    .back-button {
+
+        display: block;
+
+        width: fit-content;
+
+        margin: 25px auto;
+
+        padding: 12px 20px;
+
+        background: #eee;
+
+        color: #333;
+
+        text-decoration: none;
+
+        border-radius: 6px;
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .tracking-page {
+
+            padding: 10px;
+
+        }
+
+        .order-header,
+        .tracking-container {
+
+            padding: 18px;
+
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+```

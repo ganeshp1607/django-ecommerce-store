@@ -1,0 +1,224 @@
+{% extends "products/base.html" %}
+
+{% block title %}Checkout - My Store{% endblock %}
+
+{% block content %}
+
+<h1>💳 Checkout</h1>
+
+{% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+{% endif %}
+
+<div class="checkout-container">
+
+    <div class="order-summary">
+
+        <h2>🛒 Order Summary</h2>
+
+        {% for item in items %}
+
+        <div class="checkout-item">
+
+            {% if item.product.image %}
+                <img
+                    src="{{ item.product.image.url }}"
+                    alt="{{ item.product.name }}"
+                >
+            {% else %}
+                <div class="no-image">
+                    No Image
+                </div>
+            {% endif %}
+
+            <div>
+                <h3>{{ item.product.name }}</h3>
+
+                <p>
+                    Quantity: {{ item.quantity }}
+                </p>
+
+                <p>
+                    Subtotal: ₹{{ item.subtotal }}
+                </p>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <h2 class="total">
+            Total: ₹{{ total }}
+        </h2>
+
+    </div>
+
+
+    <div class="customer-form">
+
+        <h2>📋 Customer Details</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <label>Full Name</label>
+            <input
+                type="text"
+                name="customer_name"
+                placeholder="Enter your full name"
+                required
+            >
+
+            <label>Email</label>
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label>Phone</label>
+            <input
+                type="text"
+                name="phone"
+                placeholder="Enter your phone number"
+                required
+            >
+
+            <label>Address</label>
+            <textarea
+                name="address"
+                placeholder="Enter your address"
+                required
+            ></textarea>
+
+            <label>City</label>
+            <input
+                type="text"
+                name="city"
+                placeholder="Enter your city"
+                required
+            >
+
+            <label>Pincode</label>
+            <input
+                type="text"
+                name="pincode"
+                placeholder="Enter your pincode"
+                required
+            >
+
+            <button type="submit">
+                ✅ Place Order
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .checkout-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        max-width: 1000px;
+        margin: 30px auto;
+    }
+
+    .order-summary,
+    .customer-form {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .checkout-item {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .checkout-item img,
+    .no-image {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    .no-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eee;
+    }
+
+    .total {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .customer-form label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .customer-form input,
+    .customer-form textarea {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+
+    .customer-form textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    .customer-form button {
+        width: 100%;
+        margin-top: 25px;
+        padding: 13px;
+        background: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 17px;
+        cursor: pointer;
+    }
+
+    .error {
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 15px;
+        background: #ffe5e5;
+        color: red;
+        border-radius: 5px;
+    }
+
+    @media (max-width: 700px) {
+
+        .checkout-container {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+{% endblock %}

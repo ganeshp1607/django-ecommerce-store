@@ -1,0 +1,650 @@
+{% extends "products/base.html" %}
+
+{% block title %}Products - My Store{% endblock %}
+
+{% block content %}
+
+<h1>🛍️ Our Products</h1>
+
+<!-- SEARCH -->
+<form method="GET" class="search-form">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="🔎 Search products..."
+        value="{{ search_query }}"
+    >
+
+    <button type="submit">
+        🔎 Search
+    </button>
+
+</form>
+
+
+<!-- CATEGORY + SORT -->
+<div class="category-filter">
+
+    <!-- SORT -->
+    <div class="sort-container">
+
+        <form method="GET">
+
+            {% if search_query %}
+                <input
+                    type="hidden"
+                    name="search"
+                    value="{{ search_query }}"
+                >
+            {% endif %}
+
+            {% if selected_category %}
+                <input
+                    type="hidden"
+                    name="category"
+                    value="{{ selected_category }}"
+                >
+            {% endif %}
+
+            <label for="sort">
+                🔃 Sort By:
+            </label>
+
+            <select
+                name="sort"
+                id="sort"
+                onchange="this.form.submit()"
+            >
+
+                <option
+                    value=""
+                    {% if not selected_sort %}selected{% endif %}
+                >
+                    Default
+                </option>
+
+                <option
+                    value="price_low"
+                    {% if selected_sort == "price_low" %}selected{% endif %}
+                >
+                    💰 Price: Low to High
+                </option>
+
+                <option
+                    value="price_high"
+                    {% if selected_sort == "price_high" %}selected{% endif %}
+                >
+                    💰 Price: High to Low
+                </option>
+
+                <option
+                    value="newest"
+                    {% if selected_sort == "newest" %}selected{% endif %}
+                >
+                    🆕 Newest Products
+                </option>
+
+                <option
+                    value="name"
+                    {% if selected_sort == "name" %}selected{% endif %}
+                >
+                    🔤 Name: A to Z
+                </option>
+
+            </select>
+
+        </form>
+
+    </div>
+
+
+    <!-- ALL PRODUCTS -->
+    <a
+        href="{% url 'product_list' %}"
+        class="{% if not selected_category %}active{% endif %}"
+    >
+        All Products
+    </a>
+
+
+    <!-- CATEGORIES -->
+    {% for category in categories %}
+
+        <a
+            href="?category={{ category.id }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+            class="{% if selected_category == category.id|stringformat:'s' %}active{% endif %}"
+        >
+            {{ category.name }}
+        </a>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- PRODUCTS -->
+<div class="product-grid">
+
+    {% for product in products %}
+
+        <div class="product-card">
+
+            <!-- PRODUCT IMAGE -->
+            {% if product.image %}
+
+                <img
+                    src="{{ product.image.url }}"
+                    alt="{{ product.name }}"
+                >
+
+            {% else %}
+
+                <div class="no-image">
+                    No Image
+                </div>
+
+            {% endif %}
+
+
+            <!-- PRODUCT NAME -->
+            <h2>
+                {{ product.name }}
+            </h2>
+
+
+            <!-- PRICE -->
+            <p class="price">
+                ₹{{ product.price }}
+            </p>
+
+
+            <!-- STOCK -->
+            <p>
+                Stock: {{ product.stock }}
+            </p>
+
+
+            <!-- VIEW PRODUCT -->
+            <a
+                href="{% url 'product_detail' product.id %}"
+                class="view-btn"
+            >
+                View Product
+            </a>
+
+
+            <!-- ADD TO CART -->
+            {% if product.stock > 0 %}
+
+                <a
+                    href="{% url 'add_to_cart' product.id %}"
+                    class="add-cart-button"
+                >
+                    🛒 Add to Cart
+                </a>
+
+            {% else %}
+
+                <button
+                    class="out-of-stock-button"
+                    disabled
+                >
+                    ❌ Out of Stock
+                </button>
+
+            {% endif %}
+
+        </div>
+
+    {% empty %}
+
+        <h2>
+            No products available.
+        </h2>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- PAGINATION -->
+{% if page_obj.has_other_pages %}
+
+    <div class="pagination">
+
+        {% if page_obj.has_previous %}
+
+            <a
+                href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}"
+            >
+                ← Previous
+            </a>
+
+        {% endif %}
+
+
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if page_obj.number == num %}
+
+                <span class="current-page">
+                    {{ num }}
+                </span>
+
+            {% else %}
+
+                <a
+                    href="?page={{ num }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}"
+                >
+                    {{ num }}
+                </a>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        {% if page_obj.has_next %}
+
+            <a
+                href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}"
+            >
+                Next →
+            </a>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
+
+
+<style>
+
+/* PRODUCT GRID */
+
+.product-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 25px;
+
+    margin-top: 30px;
+
+}
+
+
+/* PRODUCT CARD */
+
+.product-card {
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.1);
+
+}
+
+
+/* PRODUCT IMAGE */
+
+.product-card img {
+
+    width: 100%;
+
+    height: 220px;
+
+    object-fit: contain;
+
+    border-radius: 8px;
+
+}
+
+
+/* NO IMAGE */
+
+.no-image {
+
+    width: 100%;
+
+    height: 220px;
+
+    background: #eee;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+}
+
+
+/* PRICE */
+
+.price {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+
+/* VIEW PRODUCT */
+
+.view-btn {
+
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    background: #222;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 5px;
+
+    margin-top: 5px;
+
+}
+
+
+/* ADD TO CART */
+
+.add-cart-button {
+
+    display: block;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin-top: 12px;
+
+    padding: 11px;
+
+    background: #28a745 !important;
+
+    color: white !important;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    border-radius: 7px;
+
+    font-weight: bold;
+
+    transition: 0.2s;
+
+}
+
+
+.add-cart-button:hover {
+
+    background: #218838 !important;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* OUT OF STOCK */
+
+.out-of-stock-button {
+
+    display: block;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin-top: 12px;
+
+    padding: 11px;
+
+    background: #999;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 7px;
+
+    font-weight: bold;
+
+}
+
+
+/* SEARCH */
+
+.search-form {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin: 25px auto;
+
+    max-width: 600px;
+
+}
+
+
+.search-form input {
+
+    flex: 1;
+
+    padding: 12px 15px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    font-size: 16px;
+
+}
+
+
+.search-form button {
+
+    padding: 12px 20px;
+
+    background: #222;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+
+.search-form button:hover {
+
+    background: #444;
+
+}
+
+
+/* CATEGORY FILTER */
+
+.category-filter {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin: 20px auto 30px;
+
+}
+
+
+.category-filter a {
+
+    padding: 10px 18px;
+
+    background: #f1f1f1;
+
+    color: #222;
+
+    text-decoration: none;
+
+    border-radius: 20px;
+
+    border: 1px solid #ddd;
+
+    transition: 0.2s;
+
+}
+
+
+.category-filter a:hover {
+
+    background: #ddd;
+
+}
+
+
+.category-filter a.active {
+
+    background: #222;
+
+    color: white;
+
+    border-color: #222;
+
+}
+
+
+/* SORT */
+
+.sort-container form {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+
+.sort-container select {
+
+    padding: 8px;
+
+    border-radius: 5px;
+
+    border: 1px solid #ccc;
+
+}
+
+
+/* PAGINATION */
+
+.pagination {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 30px 0;
+
+}
+
+
+.pagination a,
+
+.current-page {
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    text-decoration: none;
+
+}
+
+
+.pagination a {
+
+    background: #f1f1f1;
+
+    color: #222;
+
+}
+
+
+.current-page {
+
+    background: #222;
+
+    color: white;
+
+    font-weight: bold;
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .search-form {
+
+        flex-direction: column;
+
+    }
+
+
+    .search-form button {
+
+        width: 100%;
+
+    }
+
+
+    .product-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

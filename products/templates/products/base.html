@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>{% block title %}My E-Commerce Store{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        nav {
+            background-color: #222;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        nav .links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        nav .links a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background-color: #222;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #444;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            background-color: #222;
+            color: white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav>
+
+    <a href="/" class="logo">
+        🛒 My Store
+    </a>
+
+    <div class="links">
+
+        <a href="/">Products</a>
+
+        <a href="{% url 'cart' %}">
+            🛒 Cart
+        </a>
+        <a href="{% url 'wishlist' %}">
+    ❤️ Wishlist
+</a>
+
+        {% if user.is_authenticated %}
+
+    <span style="color: white; margin-left: 20px;">
+        👤 Welcome, {{ user.username }}
+    </span>
+
+    <a href="{% url 'my_orders' %}">
+        📦 My Orders
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+{% else %}
+
+            <a href="{% url 'login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'register' %}">
+                Register
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    {% block content %}
+
+    {% endblock %}
+
+</div>
+
+
+<footer>
+
+    <p>© 2026 My E-Commerce Store</p>
+
+</footer>
+
+</body>
+</html>
