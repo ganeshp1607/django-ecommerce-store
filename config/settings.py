@@ -9,10 +9,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# =========================
-# SECURITY
-# =========================
-
+# Security
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-development-key-change-in-production"
@@ -27,10 +24,7 @@ ALLOWED_HOSTS = [
 ]
 
 
-# =========================
-# APPLICATIONS
-# =========================
-
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -46,10 +40,7 @@ INSTALLED_APPS = [
 ]
 
 
-# =========================
-# MIDDLEWARE
-# =========================
-
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -65,10 +56,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "config.urls"
 
 
-# =========================
-# TEMPLATES
-# =========================
-
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -88,10 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# =========================
-# DATABASE
-# =========================
-
+# Database
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
         "default": dj_database_url.config(
@@ -107,10 +92,7 @@ else:
     }
 
 
-# =========================
-# PASSWORD VALIDATION
-# =========================
-
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -127,32 +109,19 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# =========================
-# INTERNATIONALIZATION
-# =========================
-
+# Internationalization
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Kolkata"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# =========================
-# STATIC FILES
-# =========================
-
+# Static files
 STATIC_URL = "/static/"
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
-# =========================
-# CLOUDINARY
-# =========================
-
+# Cloudinary
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
     "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
@@ -160,10 +129,7 @@ CLOUDINARY_STORAGE = {
 }
 
 
-# =========================
-# STORAGE
-# =========================
-
+# Storage
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -174,20 +140,11 @@ STORAGES = {
 }
 
 
-# =========================
-# MEDIA
-# =========================
-
+# Media
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 
-# =========================
-# EMAIL
-# =========================
+# Email
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
-    },
-}
